@@ -1,5 +1,6 @@
 package com.thiago.apirestheroku.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thiago.apirestheroku.entities.pk.OrdemItemPk;
 
 import javax.persistence.EmbeddedId;
@@ -14,7 +15,7 @@ import java.util.Objects;
 public class OrderItem implements Serializable {
 
     @EmbeddedId
-    private OrdemItemPk id;
+    private OrdemItemPk id = new OrdemItemPk();
     private Integer quantity;
     private Double price;
 
@@ -27,6 +28,7 @@ public class OrderItem implements Serializable {
         this.price = price;
     }
 
+    @JsonIgnore
     public Order getOrder(){
         return id.getOrder();
     }
