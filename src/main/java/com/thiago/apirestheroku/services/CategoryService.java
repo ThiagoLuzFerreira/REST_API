@@ -1,6 +1,7 @@
 package com.thiago.apirestheroku.services;
 
-import com.thiago.apirestheroku.entities.User;
+import com.thiago.apirestheroku.entities.Category;
+import com.thiago.apirestheroku.repositories.CategoryRepository;
 import com.thiago.apirestheroku.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,17 +12,17 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class UserService {
+public class CategoryService {
 
     @Autowired
-    private UserRepository userRepository;
+    private CategoryRepository categoryRepository;
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<Category> findAll(){
+        return categoryRepository.findAll();
     }
 
-    public User findById(Long id){
-        Optional<User> obj = userRepository.findById(id);
+    public Category findById(Long id){
+        Optional<Category> obj = categoryRepository.findById(id);
         return obj.get();
     }
 }
