@@ -1,7 +1,6 @@
 package com.thiago.apirestheroku.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thiago.apirestheroku.entities.enums.OrderStatus;
 
 import javax.persistence.*;

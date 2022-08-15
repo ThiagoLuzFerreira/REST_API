@@ -5,7 +5,6 @@ import com.thiago.apirestheroku.entities.pk.OrdemItemPk;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
