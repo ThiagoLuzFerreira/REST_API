@@ -2,8 +2,11 @@ package com.thiago.apirestheroku.services;
 
 import com.thiago.apirestheroku.entities.User;
 import com.thiago.apirestheroku.repositories.UserRepository;
+import com.thiago.apirestheroku.services.exceptions.DatabaseException;
 import com.thiago.apirestheroku.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +34,15 @@ public class UserService {
     }
 
     public void delete(Long id){
-        userRepository.deleteById(id);
+        try {
+            userRepository.deleteById(id);
+        }
+        catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException(id);
+        }
+        catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User update(Long id, User obj){
