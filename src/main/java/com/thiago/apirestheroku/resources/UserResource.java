@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,4 +35,15 @@ public class UserResource {
             return ResponseEntity.noContent().build();
         }
     }
+
+     @PostMapping
+    public ResponseEntity<User> insert(@RequestBody User obj){
+        obj = userService.insert(obj);
+        return ResponseEntity.created(ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(obj.getId())
+                .toUri())
+                .body(obj);
+     }
 }
