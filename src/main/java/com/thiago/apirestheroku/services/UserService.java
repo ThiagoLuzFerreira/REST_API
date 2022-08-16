@@ -2,6 +2,7 @@ package com.thiago.apirestheroku.services;
 
 import com.thiago.apirestheroku.entities.User;
 import com.thiago.apirestheroku.repositories.UserRepository;
+import com.thiago.apirestheroku.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class UserService {
 
     public User findById(Long id){
         Optional<User> obj = userRepository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User obj){
