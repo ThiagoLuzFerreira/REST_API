@@ -1,5 +1,6 @@
 package com.thiago.apirestheroku.resources;
 
+import com.thiago.apirestheroku.dtos.UserDTO;
 import com.thiago.apirestheroku.entities.User;
 import com.thiago.apirestheroku.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -17,19 +19,21 @@ public class UserResource {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(){
+    public ResponseEntity<List<UserDTO>> findAll(){
         List<User> list = userService.findAll();
-        return ResponseEntity.ok().body(list);
+        List<UserDTO> dtoList = list.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());;
+        return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable("id") Long id){
+    public ResponseEntity<UserDTO> findById(@PathVariable("id") Long id){
         User user = userService.findById(id);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(new UserDTO(user));
     }
 
      @PostMapping
-    public ResponseEntity<User> insert(@RequestBody User obj){
+    public ResponseEntity<User> insert(@RequestBody UserDTO objDto){
+        User obj = new User(objDto.getId(), objDto.getName(), objDto.getEmail(), objDto.getPhone(), null);
         obj = userService.insert(obj);
         return ResponseEntity.created(ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,7 +50,10 @@ public class UserResource {
      }
 
      @PutMapping("/{id}")
-     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj){
-        return ResponseEntity.ok().body(userService.update(id, obj));
+     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDTO objDto){
+        User obj = new User(null, objDto.getName(), objDto.getEmail(), objDto.getPhone(), null);
+        obj.setId(id);
+        obj = userService.update(id, obj);
+        return ResponseEntity.ok().body(obj);
      }
 }
