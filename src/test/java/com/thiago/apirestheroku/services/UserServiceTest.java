@@ -2,6 +2,7 @@ package com.thiago.apirestheroku.services;
 
 import com.thiago.apirestheroku.entities.User;
 import com.thiago.apirestheroku.repositories.UserRepository;
+import com.thiago.apirestheroku.services.exceptions.DatabaseException;
 import com.thiago.apirestheroku.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,7 +112,40 @@ class UserServiceTest {
     }
 
     @Test
-    void update() {
+    void whenDeleteThenReturnsResourceNotFoundException(){
+        try{
+            service.delete(ID);
+        }
+        catch (Exception e){
+            assertEquals(ResourceNotFoundException.class, e.getClass());
+            assertEquals(RESOURCE_NOT_FOUND + ID, e.getMessage());
+        }
+    }
+
+    @Test
+    void whenDeleteThenReturnsDatabaseException(){
+        try{
+            service.delete(ID);
+        }
+        catch (Exception e){
+            assertEquals(DatabaseException.class, e.getClass());
+        }
+    }
+
+    @Test
+    void whenUpdateThenReturnsSuccess() {
+        when(repository.getOne(anyLong())).thenReturn(user);
+        when(repository.save(any())).thenReturn(user);
+        User response = service.update(ID, user);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PHONE, response.getPhone());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     private void startUser(){
