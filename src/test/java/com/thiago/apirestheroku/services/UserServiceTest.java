@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -89,10 +89,24 @@ class UserServiceTest {
 
     @Test
     void whenInsertThenReturnsSucess() {
+        when(repository.save(any())).thenReturn(user);
+        User response = service.insert(user);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PHONE, response.getPhone());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     @Test
-    void delete() {
+    void whenDeleteThenReturnsSuccess() {
+        doNothing().when(repository).deleteById(anyLong());
+        service.delete(ID);
+        verify(repository, times(1)).deleteById(anyLong());
     }
 
     @Test
