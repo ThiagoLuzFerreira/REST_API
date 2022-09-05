@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,6 +147,20 @@ class UserServiceTest {
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PHONE, response.getPhone());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenUpdateThenReturnsResourceNotFoundException() {
+        when(repository.getOne(anyLong())).thenReturn(user);
+        when(repository.save(any())).thenReturn(user);
+       try{
+           optionalUser.get().setId(2L);
+           service.update(ID, user);
+       }
+       catch (ResourceNotFoundException e){
+           assertEquals(ResourceNotFoundException.class, e.getClass());
+           assertEquals(RESOURCE_NOT_FOUND + ID, e.getMessage());
+       }
     }
 
     private void startUser(){
