@@ -151,10 +151,10 @@ class UserServiceTest {
 
     @Test
     void whenUpdateThenReturnsResourceNotFoundException() {
-        when(repository.getOne(anyLong())).thenReturn(user);
+        when(repository.getOne(anyLong())).thenThrow(new ResourceNotFoundException(ID));
         when(repository.save(any())).thenReturn(user);
        try{
-           optionalUser.get().setId(2L);
+           user.setId(2L);
            service.update(ID, user);
        }
        catch (ResourceNotFoundException e){

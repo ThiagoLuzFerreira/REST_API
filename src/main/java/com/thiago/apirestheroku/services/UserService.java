@@ -52,7 +52,7 @@ public class UserService {
             updateData(entity, obj);
             return userRepository.save(entity);
         }
-        catch (EntityNotFoundException e){
+        catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException(id);
         }
     }
